@@ -186,7 +186,7 @@ th {
 body {
   position: relative;
   font-family: 'Lato', "PingFang SC", "Microsoft YaHei", sans-serif;
-  font-size: 14px;
+  font-size: 16px;
   line-height: 2;
   color: #555;
   background: #f5f7f9;
@@ -1238,7 +1238,7 @@ pre .javascript .function {
 .post-body .figure .caption {
   margin: -20px auto 15px;
   text-align: center;
-  font-size: 14px;
+  font-size: 16px;
   color: #999;
   font-weight: bold;
   line-height: 1;
@@ -1252,6 +1252,14 @@ pre .javascript .function {
   -ms-transform: rotate(30deg);
   -o-transform: rotate(30deg);
   transform: rotate(30deg);
+}
+.post-body p a {
+  color: #0593d3;
+  border-bottom: none;
+}
+.post-body p a:hover {
+  color: #0477ab;
+  text-decoration: underline;
 }
 .use-motion .post-block,
 .use-motion .pagination,
@@ -1823,7 +1831,7 @@ pre .javascript .function {
   width: 4px;
   height: 4px;
   border-radius: 50%;
-  background: #29ff04;
+  background: #2f45ff;
 }
 .links-of-blogroll {
   font-size: 13px;
@@ -2599,7 +2607,7 @@ pre .javascript .function {
 .header {
   position: relative;
   margin: 0 auto;
-  width: 960px;
+  width: 80%;
 }
 @media (min-width: 768px) and (max-width: 991px) {
   .header {
@@ -2619,7 +2627,7 @@ pre .javascript .function {
   width: 240px;
   background: #fff;
   box-shadow: initial;
-  border-radius: initial;
+  border-radius: 16PX;
 }
 @media (min-width: 1600px) {
   .container .header-inner {
@@ -2659,7 +2667,7 @@ pre .javascript .function {
   }
 }
 .container .main-inner {
-  width: 960px;
+  width: 80%;
 }
 @media (min-width: 768px) and (max-width: 991px) {
   .container .main-inner {
@@ -2675,11 +2683,11 @@ pre .javascript .function {
   float: right;
   box-sizing: border-box;
   padding: 40px;
-  width: 700px;
+  width: calc(100% - 260px);
   background: #fff;
   min-height: 700px;
   box-shadow: initial;
-  border-radius: initial;
+  border-radius: 16PX;
 }
 @media (min-width: 768px) and (max-width: 991px) {
   .content-wrap {
@@ -2860,7 +2868,7 @@ pre .javascript .function {
   color: #555;
   background: #fff;
   box-shadow: initial;
-  border-radius: initial;
+  border-radius: 16PX;
   opacity: 0;
 }
 .sidebar-inner.affix {
@@ -2990,4 +2998,12 @@ pre .javascript .function {
   .post-body {
     text-align: justify;
   }
+}
+.header {
+  position: relative;
+  margin: 0 auto;
+  width: 85%;
+}
+.container .main-inner {
+  width: 85%;
 }
