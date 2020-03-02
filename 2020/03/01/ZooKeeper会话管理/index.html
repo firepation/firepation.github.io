@@ -68,7 +68,7 @@
 
 
 
-  <meta name="keywords" content="MySql,数据库," />
+  <meta name="keywords" content="ZooKeeper," />
 
 
 
@@ -79,19 +79,18 @@
 
 
 
-<meta name="description" content="刚刚学习完丁奇老师《MySql 实战 45 讲》专栏中的索引部分，图文并茂的风格解开了我之前的许多疑惑，并且学习到许多新的东西，在此做个笔记，方便后续复习。由于 MySql 中存在多种存储引擎，每种存储引擎的实现方式都不太一样，而 InnoDB 在现在是比较流行的存储引擎，因此以下内容都是基于 InnoDB 讨论的。 索引是如何存储的InnDB 索引是基于 N叉树实现的，为什么要使用 N叉树而不是">
-<meta name="keywords" content="MySql,数据库">
+<meta name="description" content="会话（session）是 ZooKeeper 中最重要的概念之一，客户端与服务端之间的任何交互操作都与会话息息相关，这其中就包括临时节点的生命周期、客户端请求的顺序执行以及 Watcher 通知机制等等，这篇文章就带大家了解一下 ZooKeeper 会话的技术内幕。 会话信息Session在 ZooKeeper 客户端与服务端完成连接创建后，就建立了一个会话，这些会话的信息都是保存在 Sessio">
+<meta name="keywords" content="ZooKeeper">
 <meta property="og:type" content="article">
-<meta property="og:title" content="谈谈MySql的索引">
-<meta property="og:url" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2019&#x2F;11&#x2F;24&#x2F;%E8%B0%88%E8%B0%88MySql%E7%9A%84%E7%B4%A2%E5%BC%95&#x2F;index.html">
+<meta property="og:title" content="ZooKeeper会话管理">
+<meta property="og:url" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2020&#x2F;03&#x2F;01&#x2F;ZooKeeper%E4%BC%9A%E8%AF%9D%E7%AE%A1%E7%90%86&#x2F;index.html">
 <meta property="og:site_name" content="firepation">
-<meta property="og:description" content="刚刚学习完丁奇老师《MySql 实战 45 讲》专栏中的索引部分，图文并茂的风格解开了我之前的许多疑惑，并且学习到许多新的东西，在此做个笔记，方便后续复习。由于 MySql 中存在多种存储引擎，每种存储引擎的实现方式都不太一样，而 InnoDB 在现在是比较流行的存储引擎，因此以下内容都是基于 InnoDB 讨论的。 索引是如何存储的InnDB 索引是基于 N叉树实现的，为什么要使用 N叉树而不是">
+<meta property="og:description" content="会话（session）是 ZooKeeper 中最重要的概念之一，客户端与服务端之间的任何交互操作都与会话息息相关，这其中就包括临时节点的生命周期、客户端请求的顺序执行以及 Watcher 通知机制等等，这篇文章就带大家了解一下 ZooKeeper 会话的技术内幕。 会话信息Session在 ZooKeeper 客户端与服务端完成连接创建后，就建立了一个会话，这些会话的信息都是保存在 Sessio">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="http:&#x2F;&#x2F;ww1.sinaimg.cn&#x2F;large&#x2F;006avC6ggy1g99dliclhpj30vq0nsn1h.jpg">
-<meta property="og:image" content="http:&#x2F;&#x2F;ww1.sinaimg.cn&#x2F;large&#x2F;006avC6ggy1g99iwizamtj30yi1pd7wh.jpg">
-<meta property="og:updated_time" content="2019-11-24T15:39:36.657Z">
+<meta property="og:image" content="http:&#x2F;&#x2F;ww1.sinaimg.cn&#x2F;large&#x2F;006avC6ggy1gcfvswiqqhj30f704imx4.jpg">
+<meta property="og:updated_time" content="2020-03-02T13:21:29.442Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http:&#x2F;&#x2F;ww1.sinaimg.cn&#x2F;large&#x2F;006avC6ggy1g99dliclhpj30vq0nsn1h.jpg">
+<meta name="twitter:image" content="http:&#x2F;&#x2F;ww1.sinaimg.cn&#x2F;large&#x2F;006avC6ggy1gcfvswiqqhj30f704imx4.jpg">
 
 
 
@@ -121,13 +120,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2019/11/24/谈谈MySql的索引/"/>
+  <link rel="canonical" href="http://yoursite.com/2020/03/01/ZooKeeper会话管理/"/>
 
 
 
 
 
-  <title>谈谈MySql的索引 | firepation</title>
+  <title>ZooKeeper会话管理 | firepation</title>
   
 
 
@@ -255,7 +254,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/24/%E8%B0%88%E8%B0%88MySql%E7%9A%84%E7%B4%A2%E5%BC%95/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/03/01/ZooKeeper%E4%BC%9A%E8%AF%9D%E7%AE%A1%E7%90%86/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="firepation">
@@ -272,7 +271,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">谈谈MySql的索引</h1>
+          <h1 class="post-title" itemprop="name headline">ZooKeeper会话管理</h1>
         
 
         <div class="post-meta">
@@ -284,8 +283,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-11-24T23:30:57+08:00">
-                2019-11-24
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-03-01T16:43:36+08:00">
+                2020-03-01
               </time>
             
 
@@ -307,8 +306,8 @@
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/" itemprop="url" rel="index">
-                    <span itemprop="name">数据库</span>
+                  <a href="/categories/ZooKeeper/" itemprop="url" rel="index">
+                    <span itemprop="name">ZooKeeper</span>
                   </a>
                 </span>
 
@@ -324,7 +323,7 @@
 
           
           
-             <span id="/2019/11/24/%E8%B0%88%E8%B0%88MySql%E7%9A%84%E7%B4%A2%E5%BC%95/" class="leancloud_visitors" data-flag-title="谈谈MySql的索引">
+             <span id="/2020/03/01/ZooKeeper%E4%BC%9A%E8%AF%9D%E7%AE%A1%E7%90%86/" class="leancloud_visitors" data-flag-title="ZooKeeper会话管理">
                <span class="post-meta-divider">|</span>
                <span class="post-meta-item-icon">
                  <i class="fa fa-eye"></i>
@@ -349,7 +348,7 @@
                   <span class="post-meta-item-text">字数统计&#58;</span>
                 
                 <span title="字数统计">
-                  1.7k 字
+                  834 字
                 </span>
               
 
@@ -365,7 +364,7 @@
                   <span class="post-meta-item-text">阅读时长 &asymp;</span>
                 
                 <span title="阅读时长">
-                  6 分钟
+                  2 分钟
                 </span>
               
             </div>
@@ -386,39 +385,36 @@
       
 
       
-        <p>刚刚学习完丁奇老师《MySql 实战 45 讲》专栏中的索引部分，图文并茂的风格解开了我之前的许多疑惑，并且学习到许多新的东西，在此做个笔记，方便后续复习。由于 MySql 中存在多种存储引擎，每种存储引擎的实现方式都不太一样，而 InnoDB 在现在是比较流行的存储引擎，因此以下内容都是基于 InnoDB 讨论的。</p>
-<h3 id="索引是如何存储的"><a href="#索引是如何存储的" class="headerlink" title="索引是如何存储的"></a>索引是如何存储的</h3><p>InnDB 索引是基于 N叉树实现的，为什么要使用 N叉树而不是二叉树呢？这是因为 MySql 中的数据都是存储在磁盘中的，我们查找数据都要进行 IO 操作，IO 操作比 CPU 运行的速度慢了一个等级，使用二叉树存储数据时，当我们从一个节点出发，要找它的子节点，就得进行一次 IO 操作，当数据库存储的数据多了之后，二叉树的层数变高，进行数据查找时 IO 操作也变多了。为了减少数据查询时的 IO 操作，InnDB 底层是使用 N叉树存储的，这个 N 取决于数据块的大小。</p>
-<h3 id="主键索引、非主键索引"><a href="#主键索引、非主键索引" class="headerlink" title="主键索引、非主键索引"></a>主键索引、非主键索引</h3><p>上面说到，InnoDB 索引是基于 N叉树实现的，但是一个表我们需要建立的索引个数不止一个，因此每建立一个索引，InnoDB 就会创建一颗 N叉树来维护该索引数据，索引树建立完之后 InnDB 是如何通过索引找出我们所需要的数值的呢？</p>
-<p>假设有一张表是这个样子的：</p>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">create</span> <span class="keyword">table</span> T(</span><br><span class="line">  <span class="keyword">id</span> <span class="built_in">int</span> primary <span class="keyword">key</span>,</span><br><span class="line">  k <span class="built_in">int</span> <span class="keyword">not</span> <span class="literal">null</span>,</span><br><span class="line">  <span class="keyword">name</span> <span class="built_in">varchar</span>(<span class="number">16</span>),</span><br><span class="line">  <span class="keyword">index</span>(k))<span class="keyword">engine</span> = InnDB;</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+        <p>会话（session）是 ZooKeeper 中最重要的概念之一，客户端与服务端之间的任何交互操作都与会话息息相关，这其中就包括临时节点的生命周期、客户端请求的顺序执行以及 Watcher 通知机制等等，这篇文章就带大家了解一下 ZooKeeper 会话的技术内幕。</p>
+<h3 id="会话信息"><a href="#会话信息" class="headerlink" title="会话信息"></a>会话信息</h3><h4 id="Session"><a href="#Session" class="headerlink" title="Session"></a>Session</h4><p>在 ZooKeeper 客户端与服务端完成连接创建后，就建立了一个会话，这些会话的信息都是保存在 Session 这个实体里面的，它包含了四个重要的属性：</p>
+<ul>
+<li><p>sessionID<br>会话 ID，用来唯一标示一个会话，每次客户端创建新会话的时候，ZooKeeper 都会为其分配一个全局的 sessionID，其实现的代码如下，最终得到的结果，高 8 位是所在机器的 id，后 56 位使用了当前时间的毫秒表示。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment"> * 创建 sessionId</span></span><br><span class="line"><span class="comment"> * id 就是配置在 myid 文件中的值</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">long</span> <span class="title">initializeNextSession</span><span class="params">(<span class="keyword">long</span> id)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">long</span> nextSid = <span class="number">0</span>;</span><br><span class="line">    nextSid = (System.currentTimeMillis() &lt;&lt; <span class="number">24</span>) &gt;&gt;&gt; <span class="number">8</span>;</span><br><span class="line">    nextSid = nextSid | (id &lt;&lt; <span class="number">56</span>);</span><br><span class="line">    <span class="keyword">return</span> nextSid;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>TimeOut： 会话超时时间</p>
+</li>
+<li><p>TickTime： 下次会话超时时间点</p>
+</li>
+<li><p>isClosing：用于标记该会话是否已经被关闭</p>
+</li>
+</ul>
+<h4 id="SessionTracker"><a href="#SessionTracker" class="headerlink" title="SessionTracker"></a>SessionTracker</h4><p>是 ZooKeeper 服务端的会话管理器，负责会话的创建、管理和清理等工作。</p>
+<h3 id="会话管理"><a href="#会话管理" class="headerlink" title="会话管理"></a>会话管理</h3><h4 id="分桶策略"><a href="#分桶策略" class="headerlink" title="分桶策略"></a>分桶策略</h4><p>ZooKeeper 是通过分桶策略来管理会话的，这个策略是按照超时时间点进行分类。对于一个新创建的会话而言，其会话创建完毕后，ZooKeeper 就会为其计算 ExpirationTime，计算方式如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ExpirationTime = CurrentTime + SessionTimeout</span><br><span class="line">ExpirationTime = (ExpirationTime / ExpirationInterval + <span class="number">1</span>) * ExpirationInterval</span><br></pre></td></tr></table></figure>
 
-<p>这张表显示创建了一个索引 k，还包含一个默认的主键索引 id，InnDB 是按照如下方式来存储这两颗索引树的：</p>
-<p><img src="http://ww1.sinaimg.cn/large/006avC6ggy1g99dliclhpj30vq0nsn1h.jpg" alt="InnoDB的索引组织结构"></p>
-<p>可以看到，主键索引的叶子节点是一个数据块，每个数据块就是一个行记录，包含 id 、k、name 的值，这就叫做<strong>主键索引</strong>，而索引 k 的叶子节点包含的数据是 id 值，这就是<strong>非主键索引</strong>。在这个表中，当我们需要根据某个 k 的值查找对应的 name 值，需要先根据 k 的值找出对应的 id 值，再根据 id 值查找对应的数据块，从数据块中才可以得知 name 的值。在 InnDB 里，主键索引也被称为<strong>聚簇索引</strong>，非主键索引也被称为<strong>二级索引</strong>。</p>
-<h3 id="覆盖索引"><a href="#覆盖索引" class="headerlink" title="覆盖索引"></a>覆盖索引</h3><p>上面说到当使用二级索引查找其他字段值时，需要查找两颗索引树才可以找到对应字段的值，这是因为二级索引的叶子节点只包含主键值，如果在二级索引的叶子节点已经包含了我们要查找的内容，那么就可以减少一次查询，提升性能。例如刚刚的那张表，我们需要根据 k 值来找 id，此时二级索引的叶子节点已经包含了我们需要的数据，我们称此为<strong>覆盖索引</strong>。</p>
-<p>我们可以根据具体的业务场景来创建覆盖索引，比如根据身份证 id 查找身份证号这个需求是很常见的，我们就可以给身份证 id 和身份账号建立一个联合索引，这样根据身份证 id 找出来的数据块就包含了身份证号，不用再根据主键去寻找身份证号了。</p>
-<h3 id="索引重建"><a href="#索引重建" class="headerlink" title="索引重建"></a>索引重建</h3><p>这个是丁奇老师在专栏里面留下的问题：对于上面例子中的 InnDB 表 T，如果要重建索引 k，两个 SQL 语句可以这么写：</p>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">alter</span> <span class="keyword">table</span> T <span class="keyword">drop</span> indexk;</span><br><span class="line"><span class="keyword">alter</span> <span class="keyword">table</span> T <span class="keyword">add</span> <span class="keyword">index</span>(k);</span><br></pre></td></tr></table></figure>
-
-<p>如果要重建主键索引，也可以这么写：</p>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">alter</span> <span class="keyword">table</span> T <span class="keyword">drop</span> primary <span class="keyword">key</span>;</span><br><span class="line"><span class="keyword">alter</span> <span class="keyword">table</span> T <span class="keyword">add</span> primary <span class="keyword">key</span>(<span class="keyword">id</span>);</span><br></pre></td></tr></table></figure>
-
-<p>对于上面两个重建索引的做法，有不合适的地方吗？为什么？有更好的方法吗？</p>
-<blockquote>
-<p>回答：上面的语句中，重建索引 k 的方式合理，但是重建主键的过程不合理。不论是删除主键还是创建主键，都会将整个表重建，所以连着执行两个语句，第一个语句就白做了，这两个语句，可以使用 <code>alter table T engine = InnDB</code> 代替。</p>
-</blockquote>
-<h3 id="该索引是否是必须的"><a href="#该索引是否是必须的" class="headerlink" title="该索引是否是必须的"></a>该索引是否是必须的</h3><p>这是老师留下的另一个问题：DBA 小吕在入职新公司的时候，就发现自己接手维护的库里面，有这么一个表，表结构定义类似这样的：</p>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> <span class="string">'geek'</span> (</span><br><span class="line">  <span class="string">`a`</span> <span class="built_in">int</span>(<span class="number">11</span>) <span class="keyword">NOT</span> <span class="literal">NULL</span>,</span><br><span class="line">  <span class="string">`b`</span> <span class="built_in">int</span>(<span class="number">11</span>) <span class="keyword">NOT</span> <span class="literal">NULL</span>,</span><br><span class="line">  <span class="string">`c`</span> <span class="built_in">int</span>(<span class="number">11</span>) <span class="keyword">NOT</span> <span class="literal">NULL</span>,</span><br><span class="line">  <span class="string">`d`</span> <span class="built_in">int</span>(<span class="number">11</span>) <span class="keyword">NOT</span> <span class="literal">NULL</span>,</span><br><span class="line">  PRIMARY <span class="keyword">KEY</span> (<span class="string">`a`</span>, <span class="string">`b`</span>),</span><br><span class="line">  <span class="keyword">KEY</span> <span class="string">`c`</span> (<span class="string">`c`</span>),</span><br><span class="line">  <span class="keyword">KEY</span> <span class="string">`ca`</span> (<span class="string">`c`</span>, <span class="string">`a`</span>),</span><br><span class="line">  <span class="keyword">KEY</span> <span class="string">`cb`</span> (<span class="string">`c`</span>, <span class="string">`b`</span>)</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
-
-<p>公司的同事告诉他，由于历史原因，这个表需要 a、b 做联合主键，这个小吕理解了。但是，学过本章的内容的小吕又纳闷了，既然主键包含了 a、b 这两个字段，那意味这单独在字段 c 上创建一个索引，就已经包含了这三个字段，为什么要创建 “ca”、“cb” 这两个索引？同事告诉它，是因为他们的业务里面有这样的两种语句：</p>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> * <span class="keyword">from</span> geek <span class="keyword">where</span> c=N <span class="keyword">order</span> <span class="keyword">by</span> a <span class="keyword">limit</span> <span class="number">1</span>;</span><br><span class="line"><span class="keyword">select</span> * <span class="keyword">from</span> geek <span class="keyword">where</span> c=N <span class="keyword">order</span> <span class="keyword">by</span> b <span class="keyword">limit</span> <span class="number">1</span>;</span><br></pre></td></tr></table></figure>
-
-<p>问题是，这位同事的解释对吗，为了这两个查询模式，这两个索引是否都是必须的？为什么呢？</p>
-<blockquote>
-<p>回答：我们一个一个来分析，首先是主键索引（a、b），主键索引先按照 a 排序，然后按照 b 排序，索引 c 就是按照 c 进行排序，在叶子节点中包含主键，即先按照 c 排序，然后按照 a 排序，接着按照 b 排序。索引 ca 先按照 c 排序，然后按照 a 排序，主键部分包含 b，这样看的话它和索引 c 存储的内容是一样的。索引 cb 先按照 c 排序，然后按照 b 排序，主键部分包含 a。经过上面分析，索引 ca 是可以去掉的，因为它的作用和索引 c 是一样的。</p>
-</blockquote>
-<h3 id="专栏推荐"><a href="#专栏推荐" class="headerlink" title="专栏推荐"></a>专栏推荐</h3><p>丁奇老师的这个专栏从底层出发，并且会结合平时的业务场景来讲解 MySql，虽然刚开始没学多久，但是受益匪浅，上面只是我个人的笔记，如果大家有兴趣可以通过下面的二维码去购买对应的课程，学生还有五折哦！</p>
-<p><img src="http://ww1.sinaimg.cn/large/006avC6ggy1g99iwizamtj30yi1pd7wh.jpg" alt="mysql实战45讲"></p>
+<p>上面是计算过期时间的方法，其中 CurrentTime 是当前时间，SessionTimeout 指的是该会话设置的超时时间，ExpirationInterval 是服务器定期检查会话是否超时的时间间隔，通过上面的方法计算之后，得出的结果总是 ExpirationInterval 的整数倍，ZooKeeper 就可以定期的处理批量的会话，这是它的高明之处。</p>
+<p><img src="http://ww1.sinaimg.cn/large/006avC6ggy1gcfvswiqqhj30f704imx4.jpg" alt="ZooKeeper分通策略.png"></p>
+<h4 id="会话激活"><a href="#会话激活" class="headerlink" title="会话激活"></a>会话激活</h4><p>为了保持客户端会话的有效性，客户端会在会话超时时间过期范围内向服务端发送 PING 请求来保持会话的有效性，我们俗称 “心跳检测”。服务端接收到心跳检测之后，会重新设置该会话的过期时间，保证和该客户端保持长时间的连接状态。</p>
+<p>心跳检测完毕，ZooKeeper 会将那些还存活这的会话迁移到对应的新区块中。</p>
+<h3 id="会话清理"><a href="#会话清理" class="headerlink" title="会话清理"></a>会话清理</h3><ol>
+<li>标记会话状态为 “已关闭”：由于整个清理会话清理过程需要一段时间，为了保证不再处理来自该客户端的新请求，SessionTracker 会首先将该会话的 isClosing 属性标记为 true，这样，即使在会话清理期间接收到该客户端的新请求，也无法继续处理了</li>
+<li>发起 “会话关闭” 请求：为了使对该会话的关闭操作在整个服务器集群中都生效，ZooKeeper 使用了提交 “会话关闭” 的请求方式，并立即交付给 PrepRequestProcessor 处理器进行处理。</li>
+<li>收集需要清理的临时节点</li>
+<li>添加 “节点删除” 事务变更</li>
+<li>删除临时节点</li>
+<li>移除会话</li>
+<li>关闭 NIOServerCnxn</li>
+</ol>
 
       
     </div>
@@ -436,9 +432,7 @@
       
         <div class="post-tags">
           
-            <a href="/tags/MySql/" rel="tag"># MySql</a>
-          
-            <a href="/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/" rel="tag"># 数据库</a>
+            <a href="/tags/ZooKeeper/" rel="tag"># ZooKeeper</a>
           
         </div>
       
@@ -451,8 +445,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2019/11/19/%E7%95%AA%E8%8C%84%E5%B7%A5%E4%BD%9C%E6%B3%95/" rel="next" title="番茄工作法">
-                <i class="fa fa-chevron-left"></i> 番茄工作法
+              <a href="/2020/02/29/ZooKeeper%E5%AE%A2%E6%88%B7%E7%AB%AF%E5%90%AF%E5%8A%A8%E8%BF%87%E7%A8%8B/" rel="next" title="ZooKeeper客户端启动过程">
+                <i class="fa fa-chevron-left"></i> ZooKeeper客户端启动过程
               </a>
             
           </div>
@@ -460,10 +454,6 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2020/02/23/ZooKeeperWatcher%E6%9C%BA%E5%88%B6/" rel="prev" title="ZooKeeper Watcher机制">
-                ZooKeeper Watcher机制 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -599,7 +589,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#索引是如何存储的"><span class="nav-number">1.</span> <span class="nav-text">索引是如何存储的</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#主键索引、非主键索引"><span class="nav-number">2.</span> <span class="nav-text">主键索引、非主键索引</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#覆盖索引"><span class="nav-number">3.</span> <span class="nav-text">覆盖索引</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#索引重建"><span class="nav-number">4.</span> <span class="nav-text">索引重建</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#该索引是否是必须的"><span class="nav-number">5.</span> <span class="nav-text">该索引是否是必须的</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#专栏推荐"><span class="nav-number">6.</span> <span class="nav-text">专栏推荐</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#会话信息"><span class="nav-number">1.</span> <span class="nav-text">会话信息</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Session"><span class="nav-number">1.1.</span> <span class="nav-text">Session</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#SessionTracker"><span class="nav-number">1.2.</span> <span class="nav-text">SessionTracker</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#会话管理"><span class="nav-number">2.</span> <span class="nav-text">会话管理</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#分桶策略"><span class="nav-number">2.1.</span> <span class="nav-text">分桶策略</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#会话激活"><span class="nav-number">2.2.</span> <span class="nav-text">会话激活</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#会话清理"><span class="nav-number">3.</span> <span class="nav-text">会话清理</span></a></li></ol></div>
             
 
           </div>
