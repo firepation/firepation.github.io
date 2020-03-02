@@ -1,7 +1,10 @@
 ---
 title: ZooKeeper Watcher机制
 date: 2020-02-23 20:28:30
-tags: ZooKeeper
+categories:
+- ZooKeeper
+tags: 
+- ZooKeeper
 ---
 
 ## 前言

@@ -1,7 +1,10 @@
 ---
 title: ZooKeeper客户端启动过程
 date: 2020-02-29 09:37:59
-tags: ZooKeeper
+categories:
+- ZooKeeper
+tags: 
+- ZooKeeper
 ---
 
 作为一个开发人员，我们和 ZooKeeper 服务器交互主要还是通过官方提供的客户端，这样的话我们就有必要了解下其内部的实现原理了。底下的话是客户端的整体架构，其中：
